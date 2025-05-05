@@ -142,7 +142,31 @@
                     if (!portrait) {
                         doc.addImage("default-fantasy-male-portrait.png", "PNG", 8, 81, 64, 93, "SLOW");
                     } else {
-                        doc.addImage(portrait, "PNG", 8, 81, 64, 93, "SLOW");
+                        const props = doc.getImageProperties(portrait);
+                        // fit
+                        const defaultWidth = 64;
+                        const defaultHeight = 93;
+
+                        var x = 8;
+                        var y = 81;
+                        var width = defaultWidth;
+                        var height = defaultHeight;
+                        if (props.height > props.width) {
+                            height = (props.height * width) / props.width;
+                            if (height < defaultHeight) {
+                                y += (defaultHeight - height) / 2;
+                            } else {
+                                y -= 0.25 * height;
+                            }
+                        } else {
+                            width = (props.width * height) / props.height;
+                            if (width < defaultWidth) {
+                                x += (defaultWidth - width) / 2;
+                            } else {
+                                x -= 0.25 * width;
+                            }
+                        }
+                        doc.addImage(portrait, "PNG", x, y, width, height, "SLOW");
                     }
 
                     doc.addImage("CQNR-sheet.png", "PNG", 0, 0, 297, 210, "", "SLOW");
