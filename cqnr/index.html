@@ -156,14 +156,18 @@
                             if (height < defaultHeight) {
                                 y += (defaultHeight - height) / 2;
                             } else {
-                                y -= 0.25 * height;
+                                const diff = defaultHeight / height;
+                                const ratio = (1 - diff) / 2;
+                                y -= ratio * height;
                             }
                         } else {
                             width = (props.width * height) / props.height;
                             if (width < defaultWidth) {
                                 x += (defaultWidth - width) / 2;
                             } else {
-                                x -= 0.25 * width;
+                                const diff = defaultWidth / width;
+                                const ratio = (1 - diff) / 2;
+                                x -= ratio * width;
                             }
                         }
                         doc.addImage(portrait, "PNG", x, y, width, height, "SLOW");
