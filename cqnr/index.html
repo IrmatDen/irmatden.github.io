@@ -1,14 +1,129 @@
 <html>
     <head>
         <title>Ce qu'il nous reste - Sheet</title>
+        <style>
+            .container {
+                display: table;
+                border-spacing: 5px;
+            }
+            .row {
+                display: table-row;
+            }
+            .inner-table {
+                display: inline;
+            }
+            label, input {
+                display: table-cell;
+            }
+            .expertise {
+                background-color: #B3EBF2;
+                float: left;
+                width: 270px;
+                padding: 5px;
+                border-spacing: 5px;
+            }
+            .signs {
+                background-color: #9bdbad;
+                float: left;
+                width: 270px;
+                padding: 5px;
+                border-spacing: 5px;
+            }
+            .marks {
+                background-color: #FF746C;
+                float: left;
+                width: 270px;
+                padding: 5px;
+                border-spacing: 5px;
+            }
+        </style>
     </head>
     <body>
-        <button id="generate-sheet">Generate sheet PDF</button>
+        <div class="container">
+            <div class="row">
+                <label>Player name:</label>
+                <input type="text" id="player" />
+            </div>
+            <div class="row">
+                <label>Campaign name:</label>
+                <input type="text" id="campaign" />
+            </div>
+            <div class="row">
+                <label>Character name:</label>
+                <input type="text" id="name" />
+            </div>
+            <div class="row">
+                <label>Concept:</label>
+                <input type="text" id="concept" />
+            </div>
+            <div class="row">
+                (Portrait is coming soon.)
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Expertises -->
+            <div class="expertise">
+                <div class="inner-table">
+                    <label>Eclat #1:</label>
+                    <input type="text" id="expertise-1" />
+                </div><br/>
+                <div class="inner-table">
+                    <label>Eclat #2:</label>
+                    <input type="text" id="expertise-2" />
+                </div><br/>
+                <div class="inner-table">
+                    <label>Eclat #3:</label>
+                    <input type="text" id="expertise-3" />
+                </div>
+            </div>
+
+            <!-- Signs -->
+            <div class="signs">
+                <div class="inner-table">
+                    <label>Signes #1:</label>
+                    <input type="text" id="sign-1" />
+                </div><br/>
+                <div class="inner-table">
+                    <label>Signes #2:</label>
+                    <input type="text" id="sign-2" />
+                </div><br/>
+                <div class="inner-table">
+                    <label>Signes #3:</label>
+                    <input type="text" id="sign-3" />
+                </div>
+            </div>
+
+            <!-- Marks -->
+            <div class="marks">
+                <div class="inner-table">
+                    <label>Marques #1:</label>
+                    <input type="text" id="mark-1" />
+                </div><br/>
+                <div class="inner-table">
+                    <label>Marques #2:</label>
+                    <input type="text" id="mark-2" />
+                </div><br/>
+                <div class="inner-table">
+                    <label>Marques #3:</label>
+                    <input type="text" id="mark-3" />
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <button id="generate-sheet">Generate sheet PDF</button>
+        </div>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/3.0.1/jspdf.umd.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 const { jsPDF } = window.jspdf;
+
+                const v = function(id) {
+                    return $("#" + id).val();
+                };
 
                 const genPdf = function(
                     /*string[]*/ expertise = [],
@@ -59,13 +174,13 @@
     
                 document.getElementById('generate-sheet').addEventListener('click', function() {
                     genPdf(
-                        ["sword", "gnashing", "Vainqueur de l'Internationale de blague de Baldur"],
-                        ["La mort de sa femme le poursuit toujours", "Défaite de l'Open Blague de Padhiver", "A une jambe de bois"],
-                        ["Blagueur", "Soulard", "Sauvage"],
-                        "Léon Effligem",
-                        "Assassin qui masque son grand coeur",
-                        "Bibipe",
-                        "Le monde à Léon qui dépote"
+                        [v("expertise-1"), v("expertise-2"), v("expertise-3")],
+                        [v("mark-1"), v("mark-2"), v("mark-3")],
+                        [v("sign-1"), v("sign-2"), v("sign-3")],
+                        v("name"),
+                        v("concept"),
+                        v("player"),
+                        v("campaign")
                         );
                 });
             });
