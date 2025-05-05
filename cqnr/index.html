@@ -57,7 +57,8 @@
                 <input type="text" id="concept" />
             </div>
             <div class="row">
-                (Portrait is coming soon.)
+                <label>Portrait:</label>
+                <input type="file" id="portrait" accept="image/png, image/jpeg" />
             </div>
         </div>
 
@@ -133,11 +134,16 @@
                     /*string*/ concept,
                     /*string*/ player,
                     /*string*/ campaign,
+                    /*string*/ portrait,
 
                 ) {
                     const doc = new jsPDF({ orientation: "landscape", format: "a4", unit: "mm" });
 
-                    doc.addImage("default-fantasy-male-portrait.png", "PNG", 8, 81, 64, 93, "SLOW");
+                    if (!portrait) {
+                        doc.addImage("default-fantasy-male-portrait.png", "PNG", 8, 81, 64, 93, "SLOW");
+                    } else {
+                        doc.addImage(portrait, "PNG", 8, 81, 64, 93, "SLOW");
+                    }
 
                     doc.addImage("CQNR-sheet.png", "PNG", 0, 0, 297, 210, "", "SLOW");
                     doc.addFont("inkfree.ttf", "Ink Free", "normal");
@@ -173,15 +179,22 @@
                 };
     
                 document.getElementById('generate-sheet').addEventListener('click', function() {
-                    genPdf(
-                        [v("expertise-1"), v("expertise-2"), v("expertise-3")],
-                        [v("mark-1"), v("mark-2"), v("mark-3")],
-                        [v("sign-1"), v("sign-2"), v("sign-3")],
-                        v("name"),
-                        v("concept"),
-                        v("player"),
-                        v("campaign")
-                        );
+                    const portraitPath = $("#portrait")[0].files.length > 0 ? $("#portrait")[0].files[0] : null;
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const portraitBlob = e.target.result;
+                        genPdf(
+                            [v("expertise-1"), v("expertise-2"), v("expertise-3")],
+                            [v("mark-1"), v("mark-2"), v("mark-3")],
+                            [v("sign-1"), v("sign-2"), v("sign-3")],
+                            v("name"),
+                            v("concept"),
+                            v("player"),
+                            v("campaign"),
+                            portraitBlob
+                            );
+                    };
+                    reader.readAsDataURL(portraitPath);
                 });
             });
         </script>
