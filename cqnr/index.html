@@ -204,21 +204,34 @@
     
                 document.getElementById('generate-sheet').addEventListener('click', function() {
                     const portraitPath = $("#portrait")[0].files.length > 0 ? $("#portrait")[0].files[0] : null;
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const portraitBlob = e.target.result;
+                    if (portraitPath) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const portraitBlob = e.target.result;
+                            genPdf(
+                                [v("expertise-1"), v("expertise-2"), v("expertise-3")],
+                                [v("mark-1"), v("mark-2"), v("mark-3")],
+                                [v("sign-1"), v("sign-2"), v("sign-3")],
+                                v("name"),
+                                v("concept"),
+                                v("player"),
+                                v("campaign"),
+                                portraitBlob
+                                );
+                        };
+                        reader.readAsDataURL(portraitPath);
+                    } else {
                         genPdf(
-                            [v("expertise-1"), v("expertise-2"), v("expertise-3")],
-                            [v("mark-1"), v("mark-2"), v("mark-3")],
-                            [v("sign-1"), v("sign-2"), v("sign-3")],
-                            v("name"),
-                            v("concept"),
-                            v("player"),
-                            v("campaign"),
-                            portraitBlob
-                            );
-                    };
-                    reader.readAsDataURL(portraitPath);
+                                [v("expertise-1"), v("expertise-2"), v("expertise-3")],
+                                [v("mark-1"), v("mark-2"), v("mark-3")],
+                                [v("sign-1"), v("sign-2"), v("sign-3")],
+                                v("name"),
+                                v("concept"),
+                                v("player"),
+                                v("campaign"),
+                                null
+                                );
+                    }
                 });
             });
         </script>
