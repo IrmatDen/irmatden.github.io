@@ -4,6 +4,7 @@
         <style>
             .hblock {
                 float: left;
+                position: relative;
             }
             .container {
                 display: table;
@@ -18,30 +19,42 @@
             label, input {
                 display: table-cell;
             }
-            img {
-                max-width: 500px;
-                max-height: 500px;
+            .multiline {
+                float: left;
+                width: 270px;
+                padding: 5px;
+                border-spacing: 5px;
             }
             .expertise {
                 background-color: #B3EBF2;
-                float: left;
-                width: 270px;
-                padding: 5px;
-                border-spacing: 5px;
             }
             .signs {
                 background-color: #9bdbad;
-                float: left;
-                width: 270px;
-                padding: 5px;
-                border-spacing: 5px;
             }
             .marks {
                 background-color: #FF746C;
-                float: left;
-                width: 270px;
-                padding: 5px;
-                border-spacing: 5px;
+            }
+            img {
+                max-width: 500px;
+                max-height: 500px;
+                position: absolute;
+            }
+            #portrait-area-selector {
+                max-width: 500px;
+                min-width: 64px;
+                min-height: 93px;
+                width: 100px;
+                border: 1px solid lime;
+                resize: horizontal;
+                aspect-ratio: 64/93;
+                overflow: auto;
+                position: absolute;
+                display: flex;
+            }
+            #drag-header {
+                margin: 10px;
+                cursor: move;
+                flex-grow: 1;
             }
         </style>
     </head>
@@ -72,7 +85,7 @@
             
             <div class="container">
                 <!-- Expertises -->
-                <div class="expertise">
+                <div class="expertise multiline">
                     <div class="inner-table">
                         <label>Eclat #1:</label>
                         <input type="text" id="expertise-1" />
@@ -88,7 +101,7 @@
                 </div>
     
                 <!-- Signs -->
-                <div class="signs">
+                <div class="signs multiline">
                     <div class="inner-table">
                         <label>Signes #1:</label>
                         <input type="text" id="sign-1" />
@@ -104,7 +117,7 @@
                 </div>
     
                 <!-- Marks -->
-                <div class="marks">
+                <div class="marks multiline">
                     <div class="inner-table">
                         <label>Marques #1:</label>
                         <input type="text" id="mark-1" />
@@ -127,6 +140,9 @@
 
         <div class="hblock">
             <img id="portrait-display"></img>
+            <div id="portrait-area-selector">
+                <div id="drag-header"></div>
+            </div>
         </div>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/3.0.1/jspdf.umd.min.js"></script>
@@ -135,6 +151,41 @@
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 const { jsPDF } = window.jspdf;
+
+                function dragElement(elmnt) {
+                    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                    $("#drag-header")[0].onmousedown = dragMouseDown;
+
+                    function dragMouseDown(e) {
+                        e = e || window.event;
+                        e.preventDefault();
+                        // get the mouse cursor position at startup:
+                        pos3 = e.clientX;
+                        pos4 = e.clientY;
+                        document.onmouseup = closeDragElement;
+                        // call a function whenever the cursor moves:
+                        document.onmousemove = elementDrag;
+                    }
+
+                    function elementDrag(e) {
+                        e = e || window.event;
+                        e.preventDefault();
+                        // calculate the new cursor position:
+                        pos1 = pos3 - e.clientX;
+                        pos2 = pos4 - e.clientY;
+                        pos3 = e.clientX;
+                        pos4 = e.clientY;
+                        // set the element's new position:
+                        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+                        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+                    }
+
+                    function closeDragElement() {
+                        // stop moving when mouse button is released:
+                        document.onmouseup = null;
+                        document.onmousemove = null;
+                    }
+                }
 
                 const v = function(id) {
                     return $("#" + id).val();
@@ -235,7 +286,7 @@
                     }
                 });
 
-                document.getElementById('generate-sheet').addEventListener('click', function() {
+                $("#generate-sheet")[0].addEventListener('click', function() {
                     genPdf(
                         [v("expertise-1"), v("expertise-2"), v("expertise-3")],
                         [v("mark-1"), v("mark-2"), v("mark-3")],
@@ -247,6 +298,9 @@
                         $("#portrait-display")[0].src
                         );
                 });
+
+                // Make the DIV element draggable:
+                dragElement($("#portrait-area-selector")[0]);
             });
         </script>
     </body>
