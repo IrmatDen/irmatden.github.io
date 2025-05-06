@@ -220,7 +220,7 @@
                     /*string*/ player,
                     /*string*/ campaign,
                     /*string*/ portrait,
-
+                    /*{ x: 0, y: 0, width: 1, height: 1 }*/ area
                 ) {
                     const doc = new jsPDF({ orientation: "landscape", format: "a4", unit: "mm" });
 
@@ -229,33 +229,15 @@
                     }
                     else {
                         const props = doc.getImageProperties(portrait);
-                        // fit
+                        
                         const defaultWidth = 64;
                         const defaultHeight = 93;
+                        const zoom = defaultWidth / (area.width * props.width);
 
-                        var x = 8;
-                        var y = 81;
-                        var width = defaultWidth;
-                        var height = defaultHeight;
-                        if (props.height > props.width) {
-                            height = (props.height * width) / props.width;
-                            if (height < defaultHeight) {
-                                y += (defaultHeight - height) / 2;
-                            } else {
-                                const diff = defaultHeight / height;
-                                const ratio = (1 - diff) / 2;
-                                y -= ratio * height;
-                            }
-                        } else {
-                            width = (props.width * height) / props.height;
-                            if (width < defaultWidth) {
-                                x += (defaultWidth - width) / 2;
-                            } else {
-                                const diff = defaultWidth / width;
-                                const ratio = (1 - diff) / 2;
-                                x -= ratio * width;
-                            }
-                        }
+                        var x = 8 - zoom * area.x * props.width;
+                        var y = 81 - zoom * area.y * props.height;
+                        var width = zoom * props.width;
+                        var height = zoom * props.height;
                         doc.addImage(portrait, "PNG", x, y, width, height, "SLOW");
                     }
 
@@ -307,6 +289,16 @@
                 });
 
                 $("#generate-sheet")[0].addEventListener('click', function() {
+                    // Look at select image area.
+                    var area = { x: 0, y: 0, width: 1, height: 1 };
+                    if (portraitElement.src && portraitElement.src != "") {
+                        const selector = $("#portrait-area-selector")[0];
+
+                        area.x = parseInt(selector.style.left, 10) / portraitElement.scrollWidth;
+                        area.y = parseInt(selector.style.top) / portraitElement.scrollHeight;
+                        area.width = selector.scrollWidth / portraitElement.scrollWidth;
+                        area.height = selector.scrollHeight / portraitElement.scrollHeight;
+                    }
                     genPdf(
                         [v("expertise-1"), v("expertise-2"), v("expertise-3")],
                         [v("mark-1"), v("mark-2"), v("mark-3")],
@@ -315,7 +307,8 @@
                         v("concept"),
                         v("player"),
                         v("campaign"),
-                        portraitElement.src
+                        portraitElement.src,
+                        area
                         );
                 });
 
