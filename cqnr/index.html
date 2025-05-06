@@ -15,6 +15,10 @@
             label, input {
                 display: table-cell;
             }
+            img {
+                max-width: 500px;
+                max-height: 500px;
+            }
             .expertise {
                 background-color: #B3EBF2;
                 float: left;
@@ -61,6 +65,8 @@
                 <input type="file" id="portrait" accept="image/png, image/jpeg" />
             </div>
         </div>
+
+        <img id="portrait-display"></body>
 
         <div class="container">
             <!-- Expertises -->
@@ -207,36 +213,32 @@
                     doc.save('CQNR-' + name + '.pdf');
                 };
     
-                document.getElementById('generate-sheet').addEventListener('click', function() {
+                $("#portrait")[0].addEventListener('change', function() {
                     const portraitPath = $("#portrait")[0].files.length > 0 ? $("#portrait")[0].files[0] : null;
                     if (portraitPath) {
                         const reader = new FileReader();
-                        reader.onload = function(e) {
-                            const portraitBlob = e.target.result;
-                            genPdf(
-                                [v("expertise-1"), v("expertise-2"), v("expertise-3")],
-                                [v("mark-1"), v("mark-2"), v("mark-3")],
-                                [v("sign-1"), v("sign-2"), v("sign-3")],
-                                v("name"),
-                                v("concept"),
-                                v("player"),
-                                v("campaign"),
-                                portraitBlob
-                                );
-                        };
-                        reader.readAsDataURL(portraitPath);
-                    } else {
-                        genPdf(
-                                [v("expertise-1"), v("expertise-2"), v("expertise-3")],
-                                [v("mark-1"), v("mark-2"), v("mark-3")],
-                                [v("sign-1"), v("sign-2"), v("sign-3")],
-                                v("name"),
-                                v("concept"),
-                                v("player"),
-                                v("campaign"),
-                                null
-                                );
+                            reader.onload = function(e) {
+                                const portraitBlob = e.target.result;
+                                $("#portrait-display")[0].src = portraitBlob;
+                            };
+                            reader.readAsDataURL(portraitPath);
                     }
+                    else {
+                        $("#portrait-display")[0].src = "";
+                    }
+                });
+
+                document.getElementById('generate-sheet').addEventListener('click', function() {
+                    genPdf(
+                        [v("expertise-1"), v("expertise-2"), v("expertise-3")],
+                        [v("mark-1"), v("mark-2"), v("mark-3")],
+                        [v("sign-1"), v("sign-2"), v("sign-3")],
+                        v("name"),
+                        v("concept"),
+                        v("player"),
+                        v("campaign"),
+                        $("#portrait-display")[0].src
+                        );
                 });
             });
         </script>
