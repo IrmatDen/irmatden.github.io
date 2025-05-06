@@ -2,6 +2,9 @@
     <head>
         <title>Ce qu'il nous reste - Sheet</title>
         <style>
+            .hblock {
+                float: left;
+            }
             .container {
                 display: table;
                 border-spacing: 5px;
@@ -43,83 +46,87 @@
         </style>
     </head>
     <body>
-        <div class="container">
-            <div class="row">
-                <label>Player name:</label>
-                <input type="text" id="player" />
+        <div class="hblock">
+            <div class="container">
+                <div class="row">
+                    <label>Player name:</label>
+                    <input type="text" id="player" />
+                </div>
+                <div class="row">
+                    <label>Campaign name:</label>
+                    <input type="text" id="campaign" />
+                </div>
+                <div class="row">
+                    <label>Character name:</label>
+                    <input type="text" id="name" />
+                </div>
+                <div class="row">
+                    <label>Concept:</label>
+                    <input type="text" id="concept" />
+                </div>
+                <div class="row">
+                    <label>Portrait:</label>
+                    <input type="file" id="portrait" accept="image/png, image/jpeg" />
+                </div>
             </div>
-            <div class="row">
-                <label>Campaign name:</label>
-                <input type="text" id="campaign" />
+            
+            <div class="container">
+                <!-- Expertises -->
+                <div class="expertise">
+                    <div class="inner-table">
+                        <label>Eclat #1:</label>
+                        <input type="text" id="expertise-1" />
+                    </div><br/>
+                    <div class="inner-table">
+                        <label>Eclat #2:</label>
+                        <input type="text" id="expertise-2" />
+                    </div><br/>
+                    <div class="inner-table">
+                        <label>Eclat #3:</label>
+                        <input type="text" id="expertise-3" />
+                    </div>
+                </div>
+    
+                <!-- Signs -->
+                <div class="signs">
+                    <div class="inner-table">
+                        <label>Signes #1:</label>
+                        <input type="text" id="sign-1" />
+                    </div><br/>
+                    <div class="inner-table">
+                        <label>Signes #2:</label>
+                        <input type="text" id="sign-2" />
+                    </div><br/>
+                    <div class="inner-table">
+                        <label>Signes #3:</label>
+                        <input type="text" id="sign-3" />
+                    </div>
+                </div>
+    
+                <!-- Marks -->
+                <div class="marks">
+                    <div class="inner-table">
+                        <label>Marques #1:</label>
+                        <input type="text" id="mark-1" />
+                    </div><br/>
+                    <div class="inner-table">
+                        <label>Marques #2:</label>
+                        <input type="text" id="mark-2" />
+                    </div><br/>
+                    <div class="inner-table">
+                        <label>Marques #3:</label>
+                        <input type="text" id="mark-3" />
+                    </div>
+                </div>
             </div>
-            <div class="row">
-                <label>Character name:</label>
-                <input type="text" id="name" />
-            </div>
-            <div class="row">
-                <label>Concept:</label>
-                <input type="text" id="concept" />
-            </div>
-            <div class="row">
-                <label>Portrait:</label>
-                <input type="file" id="portrait" accept="image/png, image/jpeg" />
+    
+            <div>
+                <button id="generate-sheet">Generate sheet PDF</button>
             </div>
         </div>
 
-        <img id="portrait-display"></body>
-
-        <div class="container">
-            <!-- Expertises -->
-            <div class="expertise">
-                <div class="inner-table">
-                    <label>Eclat #1:</label>
-                    <input type="text" id="expertise-1" />
-                </div><br/>
-                <div class="inner-table">
-                    <label>Eclat #2:</label>
-                    <input type="text" id="expertise-2" />
-                </div><br/>
-                <div class="inner-table">
-                    <label>Eclat #3:</label>
-                    <input type="text" id="expertise-3" />
-                </div>
-            </div>
-
-            <!-- Signs -->
-            <div class="signs">
-                <div class="inner-table">
-                    <label>Signes #1:</label>
-                    <input type="text" id="sign-1" />
-                </div><br/>
-                <div class="inner-table">
-                    <label>Signes #2:</label>
-                    <input type="text" id="sign-2" />
-                </div><br/>
-                <div class="inner-table">
-                    <label>Signes #3:</label>
-                    <input type="text" id="sign-3" />
-                </div>
-            </div>
-
-            <!-- Marks -->
-            <div class="marks">
-                <div class="inner-table">
-                    <label>Marques #1:</label>
-                    <input type="text" id="mark-1" />
-                </div><br/>
-                <div class="inner-table">
-                    <label>Marques #2:</label>
-                    <input type="text" id="mark-2" />
-                </div><br/>
-                <div class="inner-table">
-                    <label>Marques #3:</label>
-                    <input type="text" id="mark-3" />
-                </div>
-            </div>
-        </div>
-
-        <div>
-            <button id="generate-sheet">Generate sheet PDF</button>
+        <div class="hblock">
+            <img id="portrait-display"></body>
         </div>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/3.0.1/jspdf.umd.min.js"></script>
