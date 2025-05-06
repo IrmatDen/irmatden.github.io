@@ -190,19 +190,19 @@
                     
                     doc.setFontSize(14);
                     signs.forEach((s, index) => {
-                        doc.text(s, 93, 151 + index * 9.5);
+                        doc.text(s, 123, 151 + index * 9.5, { align: "center" });
                     });
 
                     doc.setFontSize(24);
-                    doc.text(name, 10, 183);
+                    doc.text(name, 40.1, 183, { align: "center" });
 
                     doc.setFontSize(18);
-                    doc.text(concept, 12, 200);
+                    doc.text(concept, 84, 200, { align: "center" });
 
-                    doc.text(player, 219, 13);
+                    doc.text(player, 254, 13, { align: "center" });
 
                     doc.setFontSize(16);
-                    doc.text(campaign, 219, 27);
+                    doc.text(campaign, 219, 26);
 
                     doc.save('CQNR-' + name + '.pdf');
                 };
