@@ -145,6 +145,7 @@
             </div>
         </div>
 
+        <script src="drag-drop-touch.esm.min.js?autoload" type="module"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/3.0.1/jspdf.umd.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
         <script src="./Ink Free-normal.js"></script>
@@ -158,6 +159,7 @@
                 function dragElement(elmnt) {
                     var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
                     $("#drag-header")[0].onmousedown = dragMouseDown;
+                    $("#drag-header")[0].ontouchstart = dragTouchStart;
 
                     function dragMouseDown(e) {
                         e = e || window.event;
@@ -167,17 +169,41 @@
                         pos4 = e.clientY;
                         document.onmouseup = closeDragElement;
                         // call a function whenever the cursor moves:
-                        document.onmousemove = elementDrag;
+                        document.onmousemove = elementMouseDrag;
                     }
-
-                    function elementDrag(e) {
+                    function dragTouchStart(e) {
                         e = e || window.event;
                         e.preventDefault();
+                        if (e.targetTouches.length > 0) {
+                            const target = e.targetTouches[0];
+                            pos3 = target.clientX;
+                            pos4 = target.clientY;
+                            document.ontouchend = closeDragElement;
+                            // call a function whenever the cursor moves:
+                            document.ontouchmove = elementTouchDrag;
+                        }
+                    }
+
+                    function elementMouseDrag(e) {
+                        e = e || window.event;
+                        e.preventDefault();
+                        doDrag(e.clientX, e.clientY);
+                    }
+                    function elementTouchDrag(e) {
+                        e = e || window.event;
+                        e.preventDefault();
+                        if (e.targetTouches.length > 0) {
+                            const target = e.targetTouches[0];
+                            doDrag(target.clientX, target.clientY);
+                        }
+                    }
+
+                    function doDrag(clientX, clientY) {
                         // calculate the new cursor position:
-                        pos1 = pos3 - e.clientX;
-                        pos2 = pos4 - e.clientY;
-                        pos3 = e.clientX;
-                        pos4 = e.clientY;
+                        pos1 = pos3 - clientX;
+                        pos2 = pos4 - clientY;
+                        pos3 = clientX;
+                        pos4 = clientY;
                         
                         // set the element's new position:
                         var newTop = (elmnt.offsetTop - pos2);
@@ -204,6 +230,8 @@
                         // stop moving when mouse button is released:
                         document.onmouseup = null;
                         document.onmousemove = null;
+                        document.ontouchend =  null;
+                        document.ontouchmove = null;
                     }
                 }
 
