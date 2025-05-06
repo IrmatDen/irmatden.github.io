@@ -152,6 +152,9 @@
             document.addEventListener("DOMContentLoaded", function() {
                 const { jsPDF } = window.jspdf;
 
+                // UI elements
+                const portraitElement = $("#portrait-display")[0];
+
                 function dragElement(elmnt) {
                     var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
                     $("#drag-header")[0].onmousedown = dragMouseDown;
@@ -175,9 +178,26 @@
                         pos2 = pos4 - e.clientY;
                         pos3 = e.clientX;
                         pos4 = e.clientY;
+                        
                         // set the element's new position:
-                        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-                        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+                        var newTop = (elmnt.offsetTop - pos2);
+                        var newLeft = (elmnt.offsetLeft - pos1);
+
+                        if (newTop > portraitElement.height - 20) {
+                            newTop = portraitElement.height - 20;
+                        }
+                        else if (newTop < 20 - elmnt.scrollHeight) {
+                            newTop = 20 - elmnt.scrollHeight;
+                        }
+                        if (newLeft > portraitElement.width - 20) {
+                            newLeft = portraitElement.width - 20;
+                        }
+                        else if (newLeft < 20 - elmnt.scrollWidth) {
+                            newLeft = 20 - elmnt.scrollWidth;
+                        }
+
+                        elmnt.style.top = newTop + "px";
+                        elmnt.style.left = newLeft + "px";
                     }
 
                     function closeDragElement() {
@@ -277,12 +297,12 @@
                         const reader = new FileReader();
                             reader.onload = function(e) {
                                 const portraitBlob = e.target.result;
-                                $("#portrait-display")[0].src = portraitBlob;
+                                portraitElement.src = portraitBlob;
                             };
                             reader.readAsDataURL(portraitPath);
                     }
                     else {
-                        $("#portrait-display")[0].src = "";
+                        portraitElement.src = "";
                     }
                 });
 
@@ -295,7 +315,7 @@
                         v("concept"),
                         v("player"),
                         v("campaign"),
-                        $("#portrait-display")[0].src
+                        portraitElement.src
                         );
                 });
 
