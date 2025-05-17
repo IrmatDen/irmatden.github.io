@@ -235,11 +235,33 @@
                     }
                 }
 
-                const v = function(id) {
+                function v(id) {
                     return $("#" + id).val();
-                };
+                }
 
-                const genPdf = function(
+                function renderFittedTextToPdf(
+                    /*jsPDF*/ doc,
+                    /*string*/ text,
+                    /*number*/ x,
+                    /*number*/ y,
+                    /*number*/ maxWidth,
+                    /*object*/ textOpts
+                ) {
+                    textOpts = textOpts || {};
+                    const fntS = doc.getFontSize();
+                    const unitWidth = doc.getStringUnitWidth(text, {});
+                    const unitWidthMM = unitWidth / (72/25.6); // convert from inches to mm
+
+                    var w = unitWidthMM * fntS;
+                    if (w > maxWidth) {
+                        doc.setFontSize(maxWidth / unitWidthMM);
+                    }
+
+                    doc.text(text, x, y, textOpts);
+                    doc.setFontSize(fntS);
+                }
+
+                function genPdf(
                     /*string[]*/ expertise = [],
                     /*string[]*/ marks = [],
                     /*string[]*/ signs = [],
@@ -274,32 +296,32 @@
 
                     doc.setFontSize(20);
                     expertise.forEach((e, index) => {
-                        doc.text(e, 11, 11.5 + index * 12);
+                        renderFittedTextToPdf(doc, e, 11, 11.5 + index * 12, 180);
                     });
                     
                     doc.setFontSize(16);
                     marks.forEach((m, index) => {
-                        doc.text(m, 11, 54 + index * 9.5);
+                        renderFittedTextToPdf(doc, m, 11, 54 + index * 9.5, 110);
                     });
                     
                     doc.setFontSize(14);
                     signs.forEach((s, index) => {
-                        doc.text(s, 123, 151 + index * 9.5, { align: "center" });
+                        renderFittedTextToPdf(doc, s, 123, 151 + index * 9.5, 61, { align: "center" });
                     });
 
                     doc.setFontSize(24);
-                    doc.text(name, 40.1, 183, { align: "center" });
+                    renderFittedTextToPdf(doc, name, 40.1, 183, 60, { align: "center" });
 
                     doc.setFontSize(18);
-                    doc.text(concept, 84, 200, { align: "center" });
+                    renderFittedTextToPdf(doc, concept, 84, 200, 147, { align: "center" });
 
-                    doc.text(player, 254, 13, { align: "center" });
+                    renderFittedTextToPdf(doc, player, 254, 13, 70, { align: "center" });
 
                     doc.setFontSize(16);
-                    doc.text(campaign, 219, 26);
+                    renderFittedTextToPdf(doc, campaign, 219, 26, 65);
 
                     doc.save('CQNR-' + name + '.pdf');
-                };
+                }
     
                 $("#portrait")[0].addEventListener('change', function() {
                     const portraitPath = $("#portrait")[0].files.length > 0 ? $("#portrait")[0].files[0] : null;
