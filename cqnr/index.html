@@ -239,6 +239,25 @@
                     return $("#" + id).val();
                 }
 
+                function getFittedFontSize(
+                    /*jsPDF*/ doc,
+                    /*string[]*/ strings,
+                    /*number*/ maxWidth,
+                    /*number*/ estheticFontSize,
+                ) {
+                    var biggestWidth = 0;
+                    strings.forEach(s => {
+                        var unitWidth = doc.getStringUnitWidth(s, {});
+                        if (unitWidth > biggestWidth) {
+                            biggestWidth = unitWidth;
+                        }
+                    });
+
+                    const unitWidthMM = biggestWidth / (72/25.6); // convert from inches to mm
+                    const w = unitWidthMM * estheticFontSize;
+                    return w <= maxWidth ? estheticFontSize : maxWidth / unitWidthMM;
+                }
+
                 function renderFittedTextToPdf(
                     /*jsPDF*/ doc,
                     /*string*/ text,
@@ -294,9 +313,9 @@
                     doc.addImage("CQNR-sheet.png", "PNG", 0, 0, 297, 210, "", "SLOW");
                     doc.setFont("Ink Free");
 
-                    doc.setFontSize(20);
+                    doc.setFontSize(getFittedFontSize(doc, expertise, 180, 20));
                     expertise.forEach((e, index) => {
-                        renderFittedTextToPdf(doc, e, 11, 11.5 + index * 12, 180);
+                        doc.text(e, 11, 11.5 + index * 12);
                     });
                     
                     doc.setFontSize(16);
