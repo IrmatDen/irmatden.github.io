@@ -191,7 +191,6 @@
                     }
                     function elementTouchDrag(e) {
                         e = e || window.event;
-                        e.preventDefault();
                         if (e.targetTouches.length > 0) {
                             const target = e.targetTouches[0];
                             doDrag(target.clientX, target.clientY);
