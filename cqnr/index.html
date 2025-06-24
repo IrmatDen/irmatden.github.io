@@ -294,7 +294,7 @@
                     doc.addImage("CQNR-sheet.png", "PNG", 0, 0, 297, 210, "", "SLOW");
                     doc.setFont("Ink Free");
 
-                    doc.setFontSize(20);
+                    doc.setFontSize(18);
                     expertise.forEach((e, index) => {
                         renderFittedTextToPdf(doc, e, 11, 11.5 + index * 12, 180);
                     });
@@ -304,19 +304,20 @@
                         renderFittedTextToPdf(doc, m, 11, 54 + index * 9.5, 110);
                     });
                     
-                    doc.setFontSize(14);
+                    doc.setFontSize(18);
                     signs.forEach((s, index) => {
                         renderFittedTextToPdf(doc, s, 123, 151 + index * 9.5, 61, { align: "center" });
                     });
 
-                    doc.setFontSize(24);
+                    doc.setFontSize(12);
+                    renderFittedTextToPdf(doc, concept, 84, 200, 147, { align: "center" });
+
+                    doc.setFontSize(22);
                     renderFittedTextToPdf(doc, name, 40.1, 183, 60, { align: "center" });
 
                     doc.setFontSize(18);
-                    renderFittedTextToPdf(doc, concept, 84, 200, 147, { align: "center" });
-
                     renderFittedTextToPdf(doc, player, 254, 13, 70, { align: "center" });
-
+                    
                     doc.setFontSize(16);
                     renderFittedTextToPdf(doc, campaign, 219, 26, 65);
 
