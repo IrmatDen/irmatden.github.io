@@ -42,12 +42,12 @@
             }
             #portrait-area-selector {
                 max-width: 500px;
-                min-width: 64px;
-                min-height: 93px;
+                min-width: 63px;
+                min-height: 92.6px;
                 width: 100px;
                 border: 1px solid lime;
                 resize: horizontal;
-                aspect-ratio: 64/93;
+                aspect-ratio: 63/92.6;
                 overflow: auto;
                 position: absolute;
                 display: flex;
@@ -274,18 +274,22 @@
                 ) {
                     const doc = new jsPDF({ orientation: "landscape", format: "a4", unit: "mm" });
 
+                    const imgSpecs = {
+                        x: 8,
+                        y: 60,
+                        width: 63,
+                        height: 92.6
+                    };
                     if (!portrait) {
-                        doc.addImage("default-fantasy-male-portrait.png", "PNG", 8, 81, 64, 93, "SLOW");
+                        doc.addImage("default-fantasy-male-portrait.png", "PNG", imgSpecs.x, imgSpecs.y, imgSpecs.width, imgSpecs.height, "SLOW");
                     }
                     else {
                         const props = doc.getImageProperties(portrait);
                         
-                        const defaultWidth = 64;
-                        const defaultHeight = 93;
-                        const zoom = defaultWidth / (area.width * props.width);
+                        const zoom = imgSpecs.width / (area.width * props.width);
 
-                        var x = 8 - zoom * area.x * props.width;
-                        var y = 81 - zoom * area.y * props.height;
+                        var x = imgSpecs.x - zoom * area.x * props.width;
+                        var y = imgSpecs.y - zoom * area.y * props.height;
                         var width = zoom * props.width;
                         var height = zoom * props.height;
                         doc.addImage(portrait, "PNG", x, y, width, height, "SLOW");
