@@ -291,35 +291,35 @@
                         doc.addImage(portrait, "PNG", x, y, width, height, "SLOW");
                     }
 
-                    doc.addImage("CQNR-sheet.png", "PNG", 0, 0, 297, 210, "", "SLOW");
+                    doc.addImage("Layer_Front.png", "PNG", 0, 0, 297, 210, "", "SLOW");
                     doc.setFont("Ink Free");
 
                     doc.setFontSize(18);
                     expertise.forEach((e, index) => {
-                        renderFittedTextToPdf(doc, e, 11, 11.5 + index * 12, 180);
+                        renderFittedTextToPdf(doc, e, 84.5, 149 + index * 12, 195.5);
                     });
                     
                     doc.setFontSize(16);
                     marks.forEach((m, index) => {
-                        renderFittedTextToPdf(doc, m, 11, 54 + index * 9.5, 110);
+                        renderFittedTextToPdf(doc, m, 101.4, 185.5 + index * 9.2, 189);
                     });
                     
                     doc.setFontSize(18);
                     signs.forEach((s, index) => {
-                        renderFittedTextToPdf(doc, s, 123, 151 + index * 9.5, 61, { align: "center" });
+                        renderFittedTextToPdf(doc, s, 41.6, 182 + index * 9.7, 64, { align: "center" });
                     });
 
                     doc.setFontSize(12);
-                    renderFittedTextToPdf(doc, concept, 84, 200, 147, { align: "center" });
+                    renderFittedTextToPdf(doc, concept, 89.3, 138.15, 98);
 
                     doc.setFontSize(22);
-                    renderFittedTextToPdf(doc, name, 40.1, 183, 60, { align: "center" });
+                    renderFittedTextToPdf(doc, name, 39, 162.5, 62, { align: "center" });
 
                     doc.setFontSize(18);
-                    renderFittedTextToPdf(doc, player, 254, 13, 70, { align: "center" });
+                    renderFittedTextToPdf(doc, player, 35, 41.5, 70, { align: "center" });
                     
                     doc.setFontSize(16);
-                    renderFittedTextToPdf(doc, campaign, 219, 26, 65);
+                    renderFittedTextToPdf(doc, campaign, 9.35, 55, 70);
 
                     doc.save('CQNR-' + name + '.pdf');
                 }
