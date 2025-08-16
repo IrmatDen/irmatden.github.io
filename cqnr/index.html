@@ -6,6 +6,9 @@
                 float: left;
                 position: relative;
             }
+            .invisible {
+                display: none;
+            }
             .container {
                 display: table;
                 border-spacing: 5px;
@@ -61,90 +64,95 @@
     </head>
     <body>
         <div class="hblock">
-            <div class="container">
-                <div class="row">
-                    <label>Player name:</label>
-                    <input type="text" id="player" />
+            <div class="hblock">
+                <div class="container">
+                    <div class="row">
+                        <label>Player name:</label>
+                        <input type="text" id="player" />
+                    </div>
+                    <div class="row">
+                        <label>Campaign name:</label>
+                        <input type="text" id="campaign" />
+                    </div>
+                    <div class="row">
+                        <label>Character name:</label>
+                        <input type="text" id="name" />
+                    </div>
+                    <div class="row">
+                        <label>Concept:</label>
+                        <input type="text" id="concept" />
+                    </div>
+                    <div class="row">
+                        <label>Portrait:</label>
+                        <input type="file" id="portrait" accept="image/png, image/jpeg" />
+                    </div>
                 </div>
-                <div class="row">
-                    <label>Campaign name:</label>
-                    <input type="text" id="campaign" />
+                
+                <div class="container">
+                    <!-- Expertises -->
+                    <div class="expertise multiline">
+                        <div class="inner-table">
+                            <label>Eclat #1:</label>
+                            <input type="text" id="expertise-1" />
+                        </div><br/>
+                        <div class="inner-table">
+                            <label>Eclat #2:</label>
+                            <input type="text" id="expertise-2" />
+                        </div><br/>
+                        <div class="inner-table">
+                            <label>Eclat #3:</label>
+                            <input type="text" id="expertise-3" />
+                        </div>
+                    </div>
+        
+                    <!-- Signs -->
+                    <div class="signs multiline">
+                        <div class="inner-table">
+                            <label>Signes #1:</label>
+                            <input type="text" id="sign-1" />
+                        </div><br/>
+                        <div class="inner-table">
+                            <label>Signes #2:</label>
+                            <input type="text" id="sign-2" />
+                        </div><br/>
+                        <div class="inner-table">
+                            <label>Signes #3:</label>
+                            <input type="text" id="sign-3" />
+                        </div>
+                    </div>
+        
+                    <!-- Marks -->
+                    <div class="marks multiline">
+                        <div class="inner-table">
+                            <label>Marques #1:</label>
+                            <input type="text" id="mark-1" />
+                        </div><br/>
+                        <div class="inner-table">
+                            <label>Marques #2:</label>
+                            <input type="text" id="mark-2" />
+                        </div><br/>
+                        <div class="inner-table">
+                            <label>Marques #3:</label>
+                            <input type="text" id="mark-3" />
+                        </div>
+                    </div>
                 </div>
-                <div class="row">
-                    <label>Character name:</label>
-                    <input type="text" id="name" />
-                </div>
-                <div class="row">
-                    <label>Concept:</label>
-                    <input type="text" id="concept" />
-                </div>
-                <div class="row">
-                    <label>Portrait:</label>
-                    <input type="file" id="portrait" accept="image/png, image/jpeg" />
+        
+                <div>
+                    <button id="generate-sheet">Generate sheet PDF</button>
                 </div>
             </div>
-            
-            <div class="container">
-                <!-- Expertises -->
-                <div class="expertise multiline">
-                    <div class="inner-table">
-                        <label>Eclat #1:</label>
-                        <input type="text" id="expertise-1" />
-                    </div><br/>
-                    <div class="inner-table">
-                        <label>Eclat #2:</label>
-                        <input type="text" id="expertise-2" />
-                    </div><br/>
-                    <div class="inner-table">
-                        <label>Eclat #3:</label>
-                        <input type="text" id="expertise-3" />
-                    </div>
+
+            <div class="hblock">
+                <img id="portrait-display"></img>
+                <div id="portrait-area-selector">
+                    <div id="drag-header"></div>
                 </div>
-    
-                <!-- Signs -->
-                <div class="signs multiline">
-                    <div class="inner-table">
-                        <label>Signes #1:</label>
-                        <input type="text" id="sign-1" />
-                    </div><br/>
-                    <div class="inner-table">
-                        <label>Signes #2:</label>
-                        <input type="text" id="sign-2" />
-                    </div><br/>
-                    <div class="inner-table">
-                        <label>Signes #3:</label>
-                        <input type="text" id="sign-3" />
-                    </div>
-                </div>
-    
-                <!-- Marks -->
-                <div class="marks multiline">
-                    <div class="inner-table">
-                        <label>Marques #1:</label>
-                        <input type="text" id="mark-1" />
-                    </div><br/>
-                    <div class="inner-table">
-                        <label>Marques #2:</label>
-                        <input type="text" id="mark-2" />
-                    </div><br/>
-                    <div class="inner-table">
-                        <label>Marques #3:</label>
-                        <input type="text" id="mark-3" />
-                    </div>
-                </div>
-            </div>
-    
-            <div>
-                <button id="generate-sheet">Generate sheet PDF</button>
             </div>
         </div>
 
-        <div class="hblock">
-            <img id="portrait-display"></img>
-            <div id="portrait-area-selector">
-                <div id="drag-header"></div>
-            </div>
-        </div>
+        <!-- Preload image to speedup pdf generation -->
+        <canvas id="sheetCanvas" class="invisible"></canvas>
 
         <script src="drag-drop-touch.esm.min.js?autoload" type="module"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/3.0.1/jspdf.umd.min.js"></script>
@@ -156,6 +164,33 @@
 
                 // UI elements
                 const portraitElement = $("#portrait-display")[0];
+                const canvas = $("#sheetCanvas")[0];
+
+                var sheetGraphic = null;
+
+                const ctx = canvas.getContext("2d");
+                const front = new Image();
+                front.onload = async () => {
+                    canvas.width = front.width;
+                    canvas.height = front.height;
+
+                    const choix = new Image(),
+                          destin = new Image(),
+                          fatalite = new Image();
+                    choix.src = "./Layer_Choix.png";
+                    destin.src = "./Layer_Destin.png";
+                    fatalite.src = "./Layer_Fatalite.png";
+
+                    await choix.decode();
+                    await destin.decode();
+                    await fatalite.decode();
+                    
+                    ctx.drawImage(choix, 0, 0);
+                    ctx.drawImage(destin, 0, 0);
+                    ctx.drawImage(fatalite, 0, 0);
+                    ctx.drawImage(front, 0, 0);
+                };
+                front.src = "./Layer_Front.png";
 
                 function dragElement(elmnt) {
                     var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
@@ -295,10 +330,7 @@
                         doc.addImage(portrait, "PNG", x, y, width, height, "SLOW");
                     }
 
-                    doc.addImage("Layer_Choix.png", "PNG", 0, 0, 297, 210, "", "SLOW");
-                    doc.addImage("Layer_Destin.png", "PNG", 0, 0, 297, 210, "", "SLOW");
-                    doc.addImage("Layer_Fatalite.png", "PNG", 0, 0, 297, 210, "", "SLOW");
-                    doc.addImage("Layer_Front.png", "PNG", 0, 0, 297, 210, "", "SLOW");
+                    doc.addImage(sheetGraphic, "PNG", 0, 0, 297, 210, "", "FAST");
                     doc.setFont("Ink Free");
 
                     doc.setFontSize(18);
@@ -357,6 +389,8 @@
                         area.width = selector.scrollWidth / portraitElement.scrollWidth;
                         area.height = selector.scrollHeight / portraitElement.scrollHeight;
                     }
+                    
+                    sheetGraphic = canvas.toDataURL("image.png", 0.9);
                     genPdf(
                         [v("expertise-1"), v("expertise-2"), v("expertise-3")],
                         [v("mark-1"), v("mark-2"), v("mark-3")],
