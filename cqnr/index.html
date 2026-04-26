@@ -156,15 +156,14 @@
 
         <script src="drag-drop-touch.esm.min.js?autoload" type="module"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/3.0.1/jspdf.umd.min.js"></script>
-        <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
         <script src="./Ink Free-normal.js"></script>
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 const { jsPDF } = window.jspdf;
 
                 // UI elements
-                const portraitElement = $("#portrait-display")[0];
-                const canvas = $("#sheetCanvas")[0];
+                const portraitElement = document.getElementById("portrait-display");
+                const canvas = document.getElementById("sheetCanvas");
 
                 var sheetGraphic = null;
 
@@ -194,8 +193,8 @@
 
                 function dragElement(elmnt) {
                     var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-                    $("#drag-header")[0].onmousedown = dragMouseDown;
-                    $("#drag-header")[0].ontouchstart = dragTouchStart;
+                    document.getElementById("drag-header").onmousedown = dragMouseDown;
+                    document.getElementById("drag-header").ontouchstart = dragTouchStart;
 
                     function dragMouseDown(e) {
                         e = e || window.event;
@@ -271,7 +270,7 @@
                 }
 
                 function v(id) {
-                    return $("#" + id).val();
+                    return document.getElementById(id).value;
                 }
 
                 function renderFittedTextToPdf(
@@ -361,8 +360,8 @@
                     doc.save('CQNR-' + name + '.pdf');
                 }
     
-                $("#portrait")[0].addEventListener('change', function() {
-                    const portraitPath = $("#portrait")[0].files.length > 0 ? $("#portrait")[0].files[0] : null;
+                document.getElementById("portrait").addEventListener('change', function() {
+                    const portraitPath = this.files.length > 0 ? this.files[0] : null;
                     if (portraitPath) {
                         const reader = new FileReader();
                             reader.onload = function(e) {
@@ -376,11 +375,11 @@
                     }
                 });
 
-                $("#generate-sheet")[0].addEventListener('click', function() {
+                document.getElementById("generate-sheet").addEventListener('click', function() {
                     // Look at select image area.
                     var area = { x: 0, y: 0, width: 1, height: 1 };
                     if (portraitElement.src && portraitElement.src != "") {
-                        const selector = $("#portrait-area-selector")[0];
+                        const selector = document.getElementById("portrait-area-selector");
 
                         area.x = parseInt(selector.style.left, 10) / portraitElement.scrollWidth;
                         area.y = parseInt(selector.style.top) / portraitElement.scrollHeight;
@@ -391,7 +390,7 @@
                     sheetGraphic = canvas.toDataURL("image.png", 0.9);
                     genPdf(
                         [v("expertise-1"), v("expertise-2"), v("expertise-3")],
-                        [v("mark-1"), v("mark-2"), v("mark-3")],
+                        [v("mark-1")/* , v("mark-2"), v("mark-3") */],
                         [v("sign-1"), v("sign-2"), v("sign-3")],
                         v("name"),
                         v("concept"),
@@ -403,7 +402,7 @@
                 });
 
                 // Make the DIV element draggable:
-                dragElement($("#portrait-area-selector")[0]);
+                dragElement(document.getElementById("portrait-area-selector"));
             });
         </script>
     </body>
