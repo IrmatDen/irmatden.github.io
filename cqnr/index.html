@@ -284,7 +284,7 @@
                     textOpts = textOpts || {};
                     const fntS = doc.getFontSize();
                     const unitWidth = doc.getStringUnitWidth(text, {});
-                    const unitWidthMM = unitWidth / (72/25.6); // convert from inches to mm
+                    const unitWidthMM = unitWidth / (72/25.4); // convert from inches to mm
 
                     var w = unitWidthMM * fntS;
                     if (w > maxWidth) {
