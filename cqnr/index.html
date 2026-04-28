@@ -60,9 +60,43 @@
                 cursor: move;
                 flex-grow: 1;
             }
+
+            /* Spinner styles */
+            .spinner {
+                border: 4px solid rgba(0, 0, 0, 0.1);
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                border-top-color: #3498db;
+                animation: spin 1s ease-in-out infinite;
+            }
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+            .spinner-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(255, 255, 255, 0.7);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+                display: none; /* Hidden by default */
+            }
         </style>
     </head>
     <body>
+        <!-- Spinner overlay -->
+        <div class="spinner-overlay" id="spinner-overlay">
+            <div class="spinner"></div>
+        </div>
+
         <div class="hblock">
             <div class="hblock">
                 <div class="container">
@@ -155,12 +189,8 @@
         <canvas id="sheetCanvas" class="invisible"></canvas>
 
         <script src="drag-drop-touch.esm.min.js?autoload" type="module"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/3.0.1/jspdf.umd.min.js"></script>
-        <script src="./Ink Free-normal.js"></script>
         <script>
             document.addEventListener("DOMContentLoaded", function() {
-                const { jsPDF } = window.jspdf;
-
                 // UI elements
                 const portraitElement = document.getElementById("portrait-display");
                 const canvas = document.getElementById("sheetCanvas");
@@ -273,102 +303,31 @@
                     return document.getElementById(id).value;
                 }
 
-                function renderFittedTextToPdf(
-                    /*jsPDF*/ doc,
-                    /*string*/ text,
-                    /*number*/ x,
-                    /*number*/ y,
-                    /*number*/ maxWidth,
-                    /*object*/ textOpts
-                ) {
-                    textOpts = textOpts || {};
-                    const fntS = doc.getFontSize();
-                    const unitWidth = doc.getStringUnitWidth(text, {});
-                    const unitWidthMM = unitWidth / (72/25.4); // convert from inches to mm
+                const worker = new Worker('pdf-worker.js');
 
-                    var w = unitWidthMM * fntS;
-                    if (w > maxWidth) {
-                        doc.setFontSize(maxWidth / unitWidthMM);
-                    }
+                worker.onmessage = function(e) {
+                    const blobUrl = URL.createObjectURL(e.data);
+                    const a = document.createElement('a');
+                    a.href = blobUrl;
+                    a.download = `CQNR-${v("name")}.pdf`;
+                    a.click();
+                    URL.revokeObjectURL(blobUrl);
 
-                    doc.text(text, x, y, textOpts);
-                    doc.setFontSize(fntS);
-                }
+                    // Hide spinner overlay
+                    document.getElementById("spinner-overlay").style.display = "none";
+                };
 
-                function genPdf(
-                    /*string[]*/ expertise = [],
-                    /*string[]*/ marks = [],
-                    /*string[]*/ signs = [],
-                    /*string*/ name,
-                    /*string*/ concept,
-                    /*string*/ player,
-                    /*string*/ campaign,
-                    /*string*/ portrait,
-                    /*{ x: 0, y: 0, width: 1, height: 1 }*/ area
-                ) {
-                    const doc = new jsPDF({ orientation: "landscape", format: "a4", unit: "mm" });
+                worker.onerror = function(e) {
+                    console.error('Error in worker:', e);
+                    alert('An error occurred while generating the PDF.');
+                    // Hide spinner overlay
+                    document.getElementById("spinner-overlay").style.display = "none";
+                };
 
-                    const imgSpecs = {
-                        x: 8,
-                        y: 60,
-                        width: 63,
-                        height: 92.6
-                    };
-                    if (!portrait) {
-                        doc.addImage("default-fantasy-male-portrait.png", "PNG", imgSpecs.x, imgSpecs.y, imgSpecs.width, imgSpecs.height, "SLOW");
-                    }
-                    else {
-                        const props = doc.getImageProperties(portrait);
-                        
-                        const zoom = imgSpecs.width / (area.width * props.width);
-
-                        var x = imgSpecs.x - zoom * area.x * props.width;
-                        var y = imgSpecs.y - zoom * area.y * props.height;
-                        var width = zoom * props.width;
-                        var height = zoom * props.height;
-                        doc.addImage(portrait, "PNG", x, y, width, height, "SLOW");
-                    }
-
-                    doc.addImage(sheetGraphic, "PNG", 0, 0, 297, 210, "", "FAST");
-                    doc.setFont("Ink Free");
-
-                    doc.setFontSize(18);
-                    expertise.forEach((e, index) => {
-                        renderFittedTextToPdf(doc, e, 84.5, 151 + index * 15, 206);
-                    });
-                    
-                    doc.setFontSize(16);
-                    renderFittedTextToPdf(doc, marks[0], 84.5, 199, 206);
-                    
-                    doc.setFontSize(18);
-                    signs.forEach((s, index) => {
-                        renderFittedTextToPdf(doc, s, 41.6, 181 + index * 9.7, 64, { align: "center" });
-                    });
-
-                    doc.setFontSize(10);
-                    renderFittedTextToPdf(doc, concept, 89.3, 138.15, 98);
-
-                    doc.setFontSize(24);
-                    renderFittedTextToPdf(doc, name, 39, 162.5, 62, { align: "center" });
-
-                    doc.setFontSize(24);
-                    renderFittedTextToPdf(doc, player, 35, 41.5, 70, { align: "center" });
-                    
-                    doc.setFontSize(24);
-                    renderFittedTextToPdf(doc, campaign, 9.35, 55, 70);
-
-                    doc.save('CQNR-' + name + '.pdf');
-                }
-    
                 document.getElementById("portrait").addEventListener('change', function() {
                     const portraitPath = this.files.length > 0 ? this.files[0] : null;
                     if (portraitPath) {
-                        const reader = new FileReader();
-                            reader.onload = function(e) {
-                                const portraitBlob = e.target.result;
-                                portraitElement.src = portraitBlob;
-                            };
-                            reader.readAsDataURL(portraitPath);
+                        portraitElement.src = URL.createObjectURL(portraitPath);
                     }
                     else {
                         portraitElement.src = "";
@@ -387,18 +346,23 @@
                         area.height = selector.scrollHeight / portraitElement.scrollHeight;
                     }
                     
-                    sheetGraphic = canvas.toDataURL("image.png", 0.9);
-                    genPdf(
-                        [v("expertise-1"), v("expertise-2"), v("expertise-3")],
-                        [v("mark-1")/* , v("mark-2"), v("mark-3") */],
-                        [v("sign-1"), v("sign-2"), v("sign-3")],
-                        v("name"),
-                        v("concept"),
-                        v("player"),
-                        v("campaign"),
-                        portraitElement.src,
-                        area
-                        );
+                    sheetGraphic = canvas.toDataURL("image/png", 0.9);
+
+                    // Show spinner overlay
+                    document.getElementById("spinner-overlay").style.display = "flex";
+
+                    worker.postMessage({
+                        expertise: [v("expertise-1"), v("expertise-2"), v("expertise-3")],
+                        marks: [v("mark-1")/* , v("mark-2"), v("mark-3") */],
+                        signs: [v("sign-1"), v("sign-2"), v("sign-3")],
+                        name: v("name"),
+                        concept: v("concept"),
+                        player: v("player"),
+                        campaign: v("campaign"),
+                        portrait: portraitElement.src,
+                        area,
+                        sheetGraphic
+                    });
                 });
 
                 // Make the DIV element draggable:
